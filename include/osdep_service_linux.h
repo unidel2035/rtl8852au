@@ -22,6 +22,7 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/slab.h>
+/* WSL2 6.18 slab.h already uses __kmalloc_noprof — no additional redirect needed */
 #include <linux/module.h>
 #include <linux/namei.h>
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 5))
@@ -999,3 +1000,19 @@ static inline void rtw_dump_stack(void)
 
 
 #endif /* __OSDEP_LINUX_SERVICE_H_ */
+
+/* kernel 6.15+ removed from_timer/del_timer/del_timer_sync */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+#ifndef from_timer
+#define from_timer(var, callback_timer, timer_fieldname) \
+	timer_container_of(var, callback_timer, timer_fieldname)
+#endif
+#ifndef del_timer_sync
+#define del_timer_sync(t) timer_delete_sync(t)
+#endif
+#ifndef del_timer
+#define del_timer(t) timer_delete(t)
+#endif
+#endif
+
+/* WSL2 6.18 redirects handled by compat-wsl2-618.h (injected via -include) */

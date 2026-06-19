@@ -360,3 +360,8 @@
 */
 
 /*#define DBG_FW_DEBUG_MSG_PKT*/  /* FW use this feature to tx debug broadcast pkt. This pkt include FW debug message*/
+#define CONFIG_LITTLE_ENDIAN
+
+/* Required for cfg80211 operation */
+#define CONFIG_IOCTL_CFG80211
+#define RTW_USE_CFG80211_STA_EVENT

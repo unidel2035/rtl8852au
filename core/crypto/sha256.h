@@ -11,6 +11,15 @@
 
 #define SHA256_MAC_LEN 32
 
+#include <linux/version.h>
+/* Avoid conflict with kernel 6.8+ crypto/sha2.h hmac_sha256 */
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 8, 0))
+#define hmac_sha256        rtw_hmac_sha256
+#define hmac_sha256_vector rtw_hmac_sha256_vector
+#define hmac_sha256_kdf    rtw_hmac_sha256_kdf
+#endif
+
+
 int hmac_sha256_vector(const u8 *key, size_t key_len, size_t num_elem,
 		       const u8 *addr[], const size_t *len, u8 *mac);
 int hmac_sha256(const u8 *key, size_t key_len, const u8 *data,

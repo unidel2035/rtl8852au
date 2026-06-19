@@ -1,5 +1,7 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
 EXTRA_CFLAGS += -O1
+# WSL2 6.18 compat: inject shim before any header inclusion
+EXTRA_CFLAGS += -include $(src)/include/compat-wsl2-618.h
 #EXTRA_CFLAGS += -O3
 #EXTRA_CFLAGS += -Wall
 #EXTRA_CFLAGS += -Wextra
@@ -8,6 +10,7 @@ EXTRA_CFLAGS += -O1
 #EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
 EXTRA_CFLAGS += -Wno-unused-variable
+EXTRA_CFLAGS += -Wno-error=incompatible-pointer-types
 #EXTRA_CFLAGS += -Wno-unused-value
 EXTRA_CFLAGS += -Wno-unused-label
 #EXTRA_CFLAGS += -Wno-unused-parameter
@@ -70,8 +73,8 @@ CONFIG_TDLS = n
 CONFIG_WIFI_MONITOR = y
 CONFIG_MCC_MODE = n
 CONFIG_APPEND_VENDOR_IE_ENABLE = n
-CONFIG_RTW_NAPI = y
-CONFIG_RTW_GRO = y
+CONFIG_RTW_NAPI = n
+CONFIG_RTW_GRO = n
 CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_ICMP_VOQ = n
@@ -619,6 +622,8 @@ EXTRA_CFLAGS += -DDIRTY_FOR_WORK
 endif
 
 include $(src)/phl/phl.mk
+
+ccflags-y := $(EXTRA_CFLAGS)
 
 
 obj-$(CONFIG_RTL8852AU) := $(MODULE_NAME).o
